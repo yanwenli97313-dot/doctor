@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>研究执行路线图｜Research Execution Roadmap – S–O–R (Duolingo)</title>
+<style>
+  /* ===== Print Setup (A3 Portrait, B/W) ===== */
+  @page { size: A3 portrait; margin: 15mm; }
+  @media print { 
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
+  }
+  :root{
+    --ink:#000;          /* 黑白稿：只用黑色 */
+    --line:#000;
+    --muted:#333;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    font-family: "Noto Sans CJK SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, Helvetica, sans-serif;
+    color:var(--ink);
+    background:#fff;
+    line-height:1.45;
+    font-size:11.5pt;
+  }
+  /* ===== Layout ===== */
+  .page{
+    display:block;
+    width:100%;
+    margin:0 auto;
+  }
+  header{
+    border-bottom:2px solid var(--line);
+    padding-bottom:8mm;
+    margin-bottom:8mm;
+  }
+  .kicker{ font-size:10pt; letter-spacing:0.5px; color:var(--muted); text-transform:uppercase; }
+  .title{ font-size:24pt; font-weight:800; line-height:1.2; margin:4mm 0 2mm; }
+  .subtitle{ font-size:12pt; color:var(--muted); }
+  .en{ font-size:10pt; color:var(--muted); margin-bottom:3mm; }
+  .kr{ font-size:10pt; color:var(--muted); margin-bottom:3mm; }
+  .meta{
+    display:flex; flex-wrap:wrap; gap:8mm; margin-top:5mm; color:var(--muted);
+    border-top:1px solid var(--line); padding-top:4mm;
+  }
+  .sor{
+    margin:8mm 0 10mm; display:flex; gap:6mm; align-items:center; flex-wrap:wrap;
+  }
+  .box{ border:1.5px solid var(--line); padding:4mm 6mm; font-weight:700; }
+  .arrow{ display:inline-block; padding:0 2mm; font-weight:700; }
+
+  /* Grid for stages */
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:8mm;
+  }
+  @media (max-width: 1200px){ .grid{ grid-template-columns:1fr; } }
+
+  .stage{
+    border:1.5px solid var(--line);
+    padding:6mm;
+    break-inside: avoid;
+  }
+  .stage h2{
+    font-size:15pt; margin:0 0 2mm; line-height:1.25;
+  }
+  .en{
+    font-size:10pt; color:var(--muted); margin-bottom:3mm;
+  }
+  .stage .row{ display:flex; gap:6mm; align-items:flex-start; margin-top:3mm; }
+  .label{
+    flex:0 0 22mm; font-size:9pt; font-weight:700; text-transform:uppercase; letter-spacing:0.4px;
+  }
+  .content{ flex:1 1 auto; }
+  ul{ margin:0; padding-left:5mm; }
+  li{ margin:1.2mm 0; }
+  .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:10pt; }
+  .hr{ border-top:1px solid var(--line); margin:5mm 0; }
+
+  /* Summary Table */
+  .summary{ margin-top:10mm; }
+  table{ width:100%; border-collapse:collapse; }
+  th, td{ border:1px solid var(--line); padding:3mm 3.5mm; vertical-align:top; }
+  th{ text-align:left; font-weight:800; }
+  .small{ font-size:9.8pt; color:var(--muted); }
+
+  /* Footer Note */
+  footer{ margin-top:10mm; font-size:9pt; color:var(--muted); border-top:1px solid var(--line); padding-top:4mm; }
+
+  /* ===== Language Switcher ===== */
+  .lang-switch{ display:flex; gap:6mm; margin:4mm 0 0; }
+  .lang-switch button{
+    border:1px solid var(--line); background:#fff; padding:2.8mm 4mm; cursor:pointer; font-weight:700;
+  }
+  .lang-switch button.active{ background:#000; color:#fff; }
+  .i18n{ display:none; }
+  html[data-lang="en"] .i18n.en{ display:block; }
+  html[data-lang="kr"] .i18n.kr{ display:block; }
+  html[data-lang="cn"] .i18n.cn{ display:block; }
+  @media print{ .lang-switch{ display:none !important; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="lang-switch no-print" aria-label="Language Switch">
+    <button type="button" data-set-lang="en">EN</button>
+    <button type="button" data-set-lang="kr">한국어</button>
+    <button type="button" data-set-lang="cn">中文</button>
+  </nav>
+  <header>
+  <div class="i18n en">
+    <div class="kicker">Research Execution Roadmap</div>
+    <div class="title">AI Interface Design in Educational Apps and Its Impact on Brand Experience &amp; Brand Loyalty — An S–O–R-based Empirical Study on Duolingo</div>
+    <div class="subtitle">KCI submission / PhD manuscript template · S–O–R: <span class="mono">Stimulus → Organism → Response</span></div>
+    <div class="meta">
+      <div><strong>Version</strong>: v1.0 (B/W, A3 Portrait)</div>
+      <div><strong>Target App</strong>: Duolingo</div>
+      <div><strong>Method</strong>: PLS-SEM + Bootstrap (IPMA)</div>
+    </div>
+    <div class="sor" aria-label="S–O–R Path">
+      <div class="box">S｜AI Emotional Feedback</div>
+      <div class="arrow">→</div>
+      <div class="box">O｜Brand Experience</div>
+      <div class="arrow">→</div>
+      <div class="box">R｜Brand Loyalty</div>
+      <span class="small">Dashed direct path S→R included.</span>
+    </div>
+  </div>
+
+  <div class="i18n kr">
+    <div class="kicker">연구 실행 로드맵</div>
+    <div class="title">교육 앱의 AI 인터페이스 디자인이 브랜드 경험과 브랜드 충성도에 미치는 영향 — S–O–R 기반 Duolingo 실증연구</div>
+    <div class="subtitle">KCI 투고 / 박사 논문 템플릿 · S–O–R: <span class="mono">자극 → 유기체 → 반응</span></div>
+    <div class="meta">
+      <div><strong>버전</strong>: v1.0 (흑백, A3 세로)</div>
+      <div><strong>대상 앱</strong>: Duolingo</div>
+      <div><strong>방법</strong>: PLS-SEM + Bootstrap (IPMA)</div>
+    </div>
+    <div class="sor" aria-label="S–O–R 경로">
+      <div class="box">S｜AI 인터페이스 감성 피드백</div>
+      <div class="arrow">→</div>
+      <div class="box">O｜브랜드 경험</div>
+      <div class="arrow">→</div>
+      <div class="box">R｜브랜드 충성도</div>
+      <span class="small">점선 직경로 S→R 포함.</span>
+    </div>
+  </div>
+
+  <div class="i18n cn">
+    <div class="kicker">研究执行路线图</div>
+    <div class="title">教育类App中AI界面设计对品牌体验与品牌忠诚影响机制研究——基于S–O–R模型的Duolingo实证</div>
+    <div class="subtitle">KCI投稿 / 博士论文通用版 · S–O–R：<span class="mono">刺激 → 有机体 → 反应</span></div>
+    <div class="meta">
+      <div><strong>版本</strong>：v1.0（黑白，A3纵向）</div>
+      <div><strong>对象</strong>：Duolingo</div>
+      <div><strong>方法</strong>：PLS-SEM + Bootstrap（IPMA）</div>
+    </div>
+    <div class="sor" aria-label="S–O–R 路径">
+      <div class="box">S｜AI界面情感反馈</div>
+      <div class="arrow">→</div>
+      <div class="box">O｜品牌体验</div>
+      <div class="arrow">→</div>
+      <div class="box">R｜品牌忠诚</div>
+      <span class="small">含 S→R 虚线直接路径。</span>
+    </div>
+  </div>
+  </header>
+
+  <!-- ===== EN ===== -->
+  <section class="i18n en" id="stages-en" aria-label="Stages EN">
+    <article class="stage" id="stage1-en">
+      <h2>Stage 1｜Measurement Design (Instrument Development &amp; Theoretical Model)</h2>
+      <table class="stage-table" aria-label="Stage 1 Table (EN)">
+        <thead>
+          <tr>
+            <th style="width:18%">Submodule</th>
+            <th>Action</th>
+            <th style="width:24%">Deliverables</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1.1 Theoretical Model &amp; Hypotheses</strong></td>
+            <td>
+              <ul>
+                <li>Build an S–O–R framework: AI Emotional Feedback (S) → Brand Experience (O) → Brand Loyalty (R).</li>
+                <li>Specify three core hypotheses: H1 (AI Emotional Feedback → Brand Experience, +); H2 (Brand Experience → Brand Loyalty, +); H3 (Brand Experience mediates between AI Emotional Feedback and Brand Loyalty).</li>
+                <li>Ground the model in Duolingo UI features (e.g., Duo owl facial feedback, encouraging messages).</li>
+              </ul>
+            </td>
+            <td>Model diagram; hypothesis table; theory-based reference list</td>
+          </tr>
+          <tr>
+            <td><strong>1.2 Scales &amp; Questionnaire</strong></td>
+            <td>
+              <ul>
+                <li>Adopt Brakus et&nbsp;al. (2009) for brand experience and Aaker (1997) for brand loyalty.</li>
+                <li>Develop a 4-item AI Emotional Feedback scale (7-point Likert).</li>
+                <li>Ensure ≥3–4 items per construct:
+                  <ul>
+                    <li>AI Emotional Feedback (B1–B4)</li>
+                    <li>Brand Experience (C1–C3)</li>
+                    <li>Brand Loyalty (D1–D4)</li>
+                  </ul>
+                </li>
+                <li>Total 17 items (incl. screeners &amp; QC); approx. 5 minutes.</li>
+                <li>Include informed consent and screening (Duolingo use ≥3 months, ≥2 times/week).</li>
+              </ul>
+            </td>
+            <td>Questionnaire v0.1 (Word + Google Form)</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="stage" id="stage2-en">
+      <h2>Stage 2｜Data Collection (Pilot &amp; Formal Survey)</h2>
+      <table class="stage-table" aria-label="Stage 2 Table (EN)">
+        <thead>
+          <tr>
+            <th style="width:18%">Submodule</th>
+            <th>Action</th>
+            <th style="width:24%">Deliverables</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>2.1 Pilot Test &amp; Revision</strong></td>
+            <td>
+              <ul>
+                <li>Recruit ~30 Duolingo users.</li>
+                <li>Compute reliability (Cronbach’s α) and content validity.</li>
+                <li>Revise ambiguous or repetitive items based on feedback.</li>
+                <li>Produce the final questionnaire v1.0.</li>
+              </ul>
+            </td>
+            <td>Pilot report; reliability/validity table; revised questionnaire</td>
+          </tr>
+          <tr>
+            <td><strong>2.2 Sampling &amp; Sample Design</strong></td>
+            <td>
+              <ul>
+                <li>Eligibility: active Duolingo users (18–45, continuous use ≥3 months).</li>
+                <li>Expected N ≥200 (PLS-SEM 10-times rule).</li>
+                <li>Channels:
+                  <ul>
+                    <li>Duolingo Reddit, Facebook learning groups</li>
+                    <li>Korea/China online learning communities</li>
+                    <li>Paid survey platforms (e.g., Pollish, Wenjuanxing)</li>
+                  </ul>
+                </li>
+                <li>Ensure balanced structure; control invalid responses.</li>
+              </ul>
+            </td>
+            <td>Sampling &amp; recruitment plan; bilingual recruitment copy</td>
+          </tr>
+          <tr>
+            <td><strong>2.3 Formal Deployment &amp; Data Cleaning</strong></td>
+            <td>
+              <ul>
+                <li>Deploy online for ~3–4 weeks; monitor response speed and completion rate.</li>
+                <li>Clean data: remove incomplete cases, abnormal time, straight-lining.</li>
+                <li>Finalize valid sample N ≈ 150–250.</li>
+              </ul>
+            </td>
+            <td>Final dataset (CSV/SPSS); descriptive report (demographics &amp; sample quality)</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="stage" id="stage3-en">
+      <h2>Stage 3｜Data Analysis (PLS-SEM &amp; IPMA)</h2>
+      <table class="stage-table" aria-label="Stage 3 Table (EN)">
+        <thead>
+          <tr>
+            <th style="width:18%">Submodule</th>
+            <th>Action</th>
+            <th style="width:24%">Deliverables</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>3.1 PLS-SEM Estimation &amp; Validation</strong></td>
+            <td>
+              <ul>
+                <li>Import data into SmartPLS 4; measurement model: loadings, α, CR, AVE ≥0.50, HTMT ≤0.90.</li>
+                <li>Structural model: path coefficients (β), bootstrapping (5,000), R².</li>
+              </ul>
+            </td>
+            <td>SmartPLS results; path diagram (β &amp; p-values)</td>
+          </tr>
+          <tr>
+            <td><strong>3.2 Mediation Analysis</strong></td>
+            <td>
+              <ul>
+                <li>Test the mediating role of Brand Experience; 95% bootstrap CI for indirect effects (significant if CI excludes 0).</li>
+                <li>Determine full/partial mediation; compute VAF.</li>
+              </ul>
+            </td>
+            <td>Mediation analysis table; write-up for the Results section</td>
+          </tr>
+          <tr>
+            <td><strong>3.3 IPMA (Importance–Performance Map)</strong></td>
+            <td>
+              <ul>
+                <li>Target construct: Brand Loyalty; compute importance (total effects) and performance (means).</li>
+                <li>Plot the four-quadrant map; identify high-importance/low-performance priorities; derive design recommendations.</li>
+              </ul>
+            </td>
+            <td>IPMA table; graphics; 1-page conclusions</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <section class="summary" id="summary-en" aria-label="Outputs Summary (EN)">
+      <h2 class="mono" style="font-size:13pt; margin:0 0 3mm;">Summary｜Key Outputs (No Timeline)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%">Stage</th>
+            <th>Main Tasks</th>
+            <th style="width:32%">Deliverables</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Stage 1</td>
+            <td>Theoretical model &amp; hypotheses; scales &amp; questionnaire design</td>
+            <td>Model diagram; hypothesis table; reference list; questionnaire v0.1</td>
+          </tr>
+          <tr>
+            <td>Stage 2</td>
+            <td>Pilot &amp; revision; sampling &amp; sample design; formal deployment &amp; cleaning</td>
+            <td>Pilot report; reliability/validity table; revised questionnaire; sampling plan &amp; copy; final dataset &amp; sample report</td>
+          </tr>
+          <tr>
+            <td>Stage 3</td>
+            <td>PLS-SEM estimation &amp; validation; mediation analysis; IPMA</td>
+            <td>SmartPLS results &amp; path diagram; mediation table &amp; write-up; IPMA table, graphics &amp; conclusions</td>
+          </tr>
+          <tr>
+            <td>Stage 4</td>
+            <td>Drafting; revision &amp; formatting; submission &amp; review</td>
+            <td>Manuscript draft; camera-ready version &amp; appendices; submission confirmation, response-to-reviewers &amp; final acceptance</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <!-- ===== KR ===== -->
+  <section class="i18n kr" id="stages-kr" aria-label="Stages KR">
+    <article class="stage" id="stage1-kr">
+      <h2>1단계｜측정 설계(도구 개발 및 이론모형)</h2>
+      <table class="stage-table" aria-label="Stage 1 Table (KR)">
+        <thead>
+          <tr>
+            <th style="width:18%">하위 모듈</th>
+            <th>실행 과업</th>
+            <th style="width:24%">산출물</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1.1 이론모형 및 가설 수립</strong></td>
+            <td>
+              <ul>
+                <li>S–O–R 프레임 구축: AI 감성 피드백(S) → 브랜드 경험(O) → 브랜드 충성도(R).</li>
+                <li>핵심 가설 3가지: H1(AI 감성 피드백 → 브랜드 경험, +), H2(브랜드 경험 → 브랜드 충성도, +), H3(브랜드 경험의 매개효과).</li>
+                <li>Duolingo UI 특성(예: Duo 부엉이 표정 피드백, 격려 문구 등)으로 이론 근거 제시.</li>
+              </ul>
+            </td>
+            <td>이론 모형 도식; 가설 표; 이론 근거 문헌 목록</td>
+          </tr>
+          <tr>
+            <td><strong>1.2 척도 및 설문 설계</strong></td>
+            <td>
+              <ul>
+                <li>Brakus 등(2009) 브랜드 경험 척도, Aaker(1997) 브랜드 충성도 차원 참조.</li>
+                <li>AI 인터페이스 감성 피드백 4문항(7점 리커트) 자가척도 개발.</li>
+                <li>각 구성개념 최소 3–4문항:
+                  <ul>
+                    <li>AI 감성 피드백(B1–B4)</li>
+                    <li>브랜드 경험(C1–C3)</li>
+                    <li>브랜드 충성도(D1–D4)</li>
+                  </ul>
+                </li>
+                <li>총 17문항(스크리너/품질통제 포함), 약 5분.</li>
+                <li>동의서 및 스크리닝 포함(사용기간 ≥3개월, 주 ≥2회).</li>
+              </ul>
+            </td>
+            <td>설문 v0.1(Word + Google Form)</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="stage" id="stage2-kr">
+      <h2>2단계｜데이터 수집(파일럿 및 본조사)</h2>
+      <table class="stage-table" aria-label="Stage 2 Table (KR)">
+        <thead>
+          <tr>
+            <th style="width:18%">하위 모듈</th>
+            <th>실행 과업</th>
+            <th style="width:24%">산출물</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>2.1 파일럿 테스트 및 수정</strong></td>
+            <td>
+              <ul>
+                <li>Duolingo 사용자 약 30명 모집.</li>
+                <li>신뢰도(Cronbach’s α) · 내용타당도 산출.</li>
+                <li>피드백 반영해 모호/중복 문항 수정.</li>
+                <li>최종 설문 v1.0 산출.</li>
+              </ul>
+            </td>
+            <td>파일럿 보고서; 신·타당도 표; 수정 설문</td>
+          </tr>
+          <tr>
+            <td><strong>2.2 표집 및 표본 설계</strong></td>
+            <td>
+              <ul>
+                <li>자격: 활성 사용자(18–45세, 연속 ≥3개월).</li>
+                <li>예상 N ≥200(PLS-SEM 10배 규칙).</li>
+                <li>채널:
+                  <ul>
+                    <li>Duolingo Reddit, Facebook 학습 그룹</li>
+                    <li>한국/중국 온라인 학습 커뮤니티</li>
+                    <li>유료 설문 플랫폼(Pollfish, 问卷星 등)</li>
+                  </ul>
+                </li>
+                <li>표본 구조 균형, 무효 응답 통제.</li>
+              </ul>
+            </td>
+            <td>표집·모집 계획; 이중언어 모집 문안</td>
+          </tr>
+          <tr>
+            <td><strong>2.3 본조사 배포 및 데이터 정제</strong></td>
+            <td>
+              <ul>
+                <li>온라인 배포 약 3–4주; 응답 속도·완료율 모니터링.</li>
+                <li>정제: 미완료, 비정상 시간, 동질 응답 제거.</li>
+                <li>유효 표본 N ≈ 150–250 확정.</li>
+              </ul>
+            </td>
+            <td>최종 데이터셋(CSV/SPSS); 기술 보고서(인구통계·표본 품질)</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="stage" id="stage3-kr">
+      <h2>3단계｜데이터 분석(PLS-SEM &amp; IPMA)</h2>
+      <table class="stage-table" aria-label="Stage 3 Table (KR)">
+        <thead>
+          <tr>
+            <th style="width:18%">하위 모듈</th>
+            <th>실행 과업</th>
+            <th style="width:24%">산출물</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>3.1 PLS-SEM 추정·검증</strong></td>
+            <td>
+              <ul>
+                <li>SmartPLS 4 입력; 측정모형: 적재량, α, CR, AVE ≥0.50, HTMT ≤0.90.</li>
+                <li>구조모형: 경로계수 β, 부트스트래핑(5,000), R².</li>
+              </ul>
+            </td>
+            <td>SmartPLS 결과; 경로도(β·p값)</td>
+          </tr>
+          <tr>
+            <td><strong>3.2 매개효과 검정</strong></td>
+            <td>
+              <ul>
+                <li>브랜드 경험의 매개역할; 간접효과 95% CI(0 미포함 시 유의).</li>
+                <li>완전/부분 매개 판정; VAF 산출.</li>
+              </ul>
+            </td>
+            <td>매개분석 표; 결과 서술</td>
+          </tr>
+          <tr>
+            <td><strong>3.3 IPMA(중요도–성과 지도)</strong></td>
+            <td>
+              <ul>
+                <li>목표: 브랜드 충성도; 중요도(총효과)·성과(평균) 계산.</li>
+                <li>4사분면 도식; 고중요/저성과 우선 개선안 도출.</li>
+              </ul>
+            </td>
+            <td>IPMA 표; 그래픽; 1페이지 결론</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <section class="summary" id="summary-kr" aria-label="Outputs Summary (KR)">
+      <h2 class="mono" style="font-size:13pt; margin:0 0 3mm;">요약｜핵심 산출물(타임라인 없음)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%">단계</th>
+            <th>주요 과업</th>
+            <th style="width:32%">산출물</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1단계</td>
+            <td>이론모형·가설; 척도·설문 설계</td>
+            <td>모형도; 가설표; 문헌 리스트; 설문 v0.1</td>
+          </tr>
+          <tr>
+            <td>2단계</td>
+            <td>파일럿·수정; 표집·표본 설계; 본조사·정제</td>
+            <td>파일럿 보고서; 신·타당도 표; 수정 설문; 표집 계획·문안; 최종 데이터셋·표본 보고서</td>
+          </tr>
+          <tr>
+            <td>3단계</td>
+            <td>PLS-SEM 추정·검증; 매개효과; IPMA</td>
+            <td>SmartPLS 결과·경로도; 매개 표·서술; IPMA 표·그래픽·결론</td>
+          </tr>
+          <tr>
+            <td>4단계</td>
+            <td>초고; 수정·서식; 투고·심사</td>
+            <td>논문 초고; 최종본·부록; 투고 확인·심사 답신·최종 게재본</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <!-- ===== CN ===== -->
+  <section class="i18n cn" id="stages-cn" aria-label="Stages CN">
+    <article class="stage" id="stage1-cn">
+      <h2>阶段一｜测量设计（问卷开发与理论模型构建）</h2>
+      <table class="stage-table" aria-label="Stage 1 Table (CN)">
+        <thead>
+          <tr>
+            <th style="width:18%">子模块</th>
+            <th>行动任务</th>
+            <th style="width:24%">产出物</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1.1 理论模型与假设制定</strong></td>
+            <td>
+              <ul>
+                <li>构建S–O–R研究框架：AI情感反馈（S）→ 品牌体验（O）→ 品牌忠诚（R）。</li>
+                <li>建立三条核心假设：H1（AI情感反馈 → 品牌体验，+）；H2（品牌体验 → 品牌忠诚，+）；H3（品牌体验的中介作用）。</li>
+                <li>结合Duolingo界面特征（如Duo猫头鹰表情反馈、鼓励语）进行理论论证。</li>
+              </ul>
+            </td>
+            <td>理论模型图；假设表格；理论依据文献列表</td>
+          </tr>
+          <tr>
+            <td><strong>1.2 量表与问卷设计</strong></td>
+            <td>
+              <ul>
+                <li>参照Brakus等（2009）品牌体验量表与Aaker（1997）品牌忠诚维度。</li>
+                <li>自编AI界面情感反馈量表（4题，7点李克特）。</li>
+                <li>每个变量≥3–4题：
+                  <ul>
+                    <li>AI情感反馈（B1–B4）</li>
+                    <li>品牌体验（C1–C3）</li>
+                    <li>品牌忠诚（D1–D4）</li>
+                  </ul>
+                </li>
+                <li>问卷共17题（含筛选与质控），约5分钟。</li>
+                <li>设置知情同意与筛选逻辑（使用≥3个月，周使用≥2次）。</li>
+              </ul>
+            </td>
+            <td>问卷v0.1（Word版 + Google表单）</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="stage" id="stage2-cn">
+      <h2>阶段二｜数据收集（预测试与正式发放）</h2>
+      <table class="stage-table" aria-label="Stage 2 Table (CN)">
+        <thead>
+          <tr>
+            <th style="width:18%">子模块</th>
+            <th>行动任务</th>
+            <th style="width:24%">产出物</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>2.1 预测试与修订</strong></td>
+            <td>
+              <ul>
+                <li>招募约30位Duolingo用户。</li>
+                <li>计算信度（Cronbach’s α）与内容效度。</li>
+                <li>依据反馈修订语义歧义或重复问题。</li>
+                <li>形成最终问卷v1.0。</li>
+              </ul>
+            </td>
+            <td>预测试报告；信效度表；修订后问卷</td>
+          </tr>
+          <tr>
+            <td><strong>2.2 抽样与样本设计</strong></td>
+            <td>
+              <ul>
+                <li>样本标准：活跃用户（18–45岁，连续使用≥3个月）。</li>
+                <li>预期样本量≥200（PLS-SEM“最大路径×10”规则）。</li>
+                <li>渠道：
+                  <ul>
+                    <li>Duolingo Reddit、Facebook学习群组</li>
+                    <li>韩国/中国在线学习社群</li>
+                    <li>付费问卷平台（Pollfish、问卷星等）</li>
+                  </ul>
+                </li>
+                <li>保证结构均衡，控制无效作答。</li>
+              </ul>
+            </td>
+            <td>抽样与招募方案；双语招募文案</td>
+          </tr>
+          <tr>
+            <td><strong>2.3 正式发放与数据清洗</strong></td>
+            <td>
+              <ul>
+                <li>线上发放约3–4周；监测答题速度与完成率。</li>
+                <li>清洗：删除未完成、异常时长、同质作答。</li>
+                <li>确定最终有效样本N≈150–250。</li>
+              </ul>
+            </td>
+            <td>最终数据集（CSV/SPSS）；数据描述报告（人口统计+样本质量）</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="stage" id="stage3-cn">
+      <h2>阶段三｜数据分析（PLS-SEM与IPMA）</h2>
+      <table class="stage-table" aria-label="Stage 3 Table (CN)">
+        <thead>
+          <tr>
+            <th style="width:18%">子模块</th>
+            <th>行动任务</th>
+            <th style="width:24%">产出物</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>3.1 模型估计与验证</strong></td>
+            <td>
+              <ul>
+                <li>SmartPLS 4导入数据；测量模型：载荷、α、CR、AVE≥0.50、HTMT≤0.90。</li>
+                <li>结构模型：路径系数β、Bootstrap（5000）、R²。</li>
+              </ul>
+            </td>
+            <td>SmartPLS结果；路径图（含β与p值）</td>
+          </tr>
+          <tr>
+            <td><strong>3.2 中介效应检验</strong></td>
+            <td>
+              <ul>
+                <li>检验品牌体验的中介作用；间接效应95%CI（不含0即显著）。</li>
+                <li>判断完全/部分中介；计算VAF。</li>
+              </ul>
+            </td>
+            <td>中介效应表；结果写作段落</td>
+          </tr>
+          <tr>
+            <td><strong>3.3 IPMA（重要性–绩效映射）</strong></td>
+            <td>
+              <ul>
+                <li>目标变量：品牌忠诚；计算重要性（总效应）与绩效（均值）。</li>
+                <li>绘制四象限图；识别“高重要/低绩效”优先项并形成设计建议。</li>
+              </ul>
+            </td>
+            <td>IPMA表；图形输出；一页结论</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <section class="summary" id="summary-cn" aria-label="Outputs Summary (CN)">
+      <h2 class="mono" style="font-size:13pt; margin:0 0 3mm;">总结｜关键成果（无时间节点）</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%">阶段</th>
+            <th>主要任务</th>
+            <th style="width:32%">产出物</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>阶段一</td>
+            <td>理论模型与假设；量表与问卷设计</td>
+            <td>模型图；假设表；文献列表；问卷v0.1</td>
+          </tr>
+          <tr>
+            <td>阶段二</td>
+            <td>预测试与修订；抽样与样本设计；正式发放与清洗</td>
+            <td>预测试报告；信效度表；修订问卷；抽样方案与文案；最终数据集与样本报告</td>
+          </tr>
+          <tr>
+            <td>阶段三</td>
+            <td>PLS-SEM估计与验证；中介效应；IPMA</td>
+            <td>SmartPLS结果与路径图；中介表与写作；IPMA表、图与结论</td>
+          </tr>
+          <tr>
+            <td>阶段四</td>
+            <td>初稿撰写；修改与排版；投稿与审稿</td>
+            <td>论文初稿；定稿与附录；投稿确认、评审回复与最终录用</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <footer>
+    <div class="i18n en">Print tips: Choose “A3 Portrait”, margins 15 mm, and turn off browser headers/footers. To place into Figma, export to PDF then import. Need a landscape / EN–KR / EN–CN version or a Gantt overlay? I can derive it from this master.</div>
+    <div class="i18n kr">인쇄 팁: 브라우저 인쇄에서 ‘A3 세로(Portrait)’, 여백 15mm, 머리말/바닥글 끄기. Figma에는 PDF로 내보낸 뒤 가져오세요. 가로형/영–한/영–중 버전 또는 간트 오버레이가 필요하면 본 마스터에서 파생 가능합니다.</div>
+    <div class="i18n cn">打印建议：浏览器打印选择“A3 纵向”、页边距 15 mm，关闭页眉页脚；置入 Figma 时先导出 PDF 再导入。若需横版 / EN–KR / EN–CN 版本或甘特图叠加，可在此版基础上派生。</div>
+  </footer>
+</div>
+<script>
+(function(){
+  const root = document.documentElement;
+  const btns = document.querySelectorAll('.lang-switch [data-set-lang]');
+  const titles = {
+    en: 'Research Execution Roadmap – S–O–R (Duolingo)',
+    kr: '연구 실행 로드맵 – S–O–R (Duolingo)',
+    cn: '研究执行路线图 – S–O–R（Duolingo）'
+  };
+  function setLang(lang){
+    root.setAttribute('data-lang', lang);
+    btns.forEach(b=>b.classList.toggle('active', b.dataset.setLang===lang));
+    document.title = titles[lang] || titles.en;
+    try{ localStorage.setItem('tri_lang_pref', lang); }catch(e){}
+  }
+  btns.forEach(b=>b.addEventListener('click', ()=> setLang(b.dataset.setLang)));
+  const initial = (function(){
+    try{ return localStorage.getItem('tri_lang_pref') || 'en'; }catch(e){ return 'en'; }
+  })();
+  setLang(initial);
+})();
+</script>
+</body>
+</html>
