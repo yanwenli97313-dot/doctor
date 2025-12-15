@@ -1,753 +1,518 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>研究执行路线图｜Research Execution Roadmap – S–O–R (Duolingo)</title>
-<style>
-  /* ===== Print Setup (A3 Portrait, B/W) ===== */
-  @page { size: A3 portrait; margin: 15mm; }
-  @media print { 
-    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .no-print { display: none !important; }
-  }
-  :root{
-    --ink:#000;          /* 黑白稿：只用黑色 */
-    --line:#000;
-    --muted:#333;
-  }
-  *{ box-sizing:border-box; }
-  html,body{ height:100%; }
-  body{
-    font-family: "Noto Sans CJK SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, Helvetica, sans-serif;
-    color:var(--ink);
-    background:#fff;
-    line-height:1.45;
-    font-size:11.5pt;
-  }
-  /* ===== Layout ===== */
-  .page{
-    display:block;
-    width:100%;
-    margin:0 auto;
-  }
-  header{
-    border-bottom:2px solid var(--line);
-    padding-bottom:8mm;
-    margin-bottom:8mm;
-  }
-  .kicker{ font-size:10pt; letter-spacing:0.5px; color:var(--muted); text-transform:uppercase; }
-  .title{ font-size:24pt; font-weight:800; line-height:1.2; margin:4mm 0 2mm; }
-  .subtitle{ font-size:12pt; color:var(--muted); }
-  .en{ font-size:10pt; color:var(--muted); margin-bottom:3mm; }
-  .kr{ font-size:10pt; color:var(--muted); margin-bottom:3mm; }
-  .meta{
-    display:flex; flex-wrap:wrap; gap:8mm; margin-top:5mm; color:var(--muted);
-    border-top:1px solid var(--line); padding-top:4mm;
-  }
-  .sor{
-    margin:8mm 0 10mm; display:flex; gap:6mm; align-items:center; flex-wrap:wrap;
-  }
-  .box{ border:1.5px solid var(--line); padding:4mm 6mm; font-weight:700; }
-  .arrow{ display:inline-block; padding:0 2mm; font-weight:700; }
-
-  /* Grid for stages */
-  .grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:8mm;
-  }
-  @media (max-width: 1200px){ .grid{ grid-template-columns:1fr; } }
-
-  .stage{
-    border:1.5px solid var(--line);
-    padding:6mm;
-    break-inside: avoid;
-  }
-  .stage h2{
-    font-size:15pt; margin:0 0 2mm; line-height:1.25;
-  }
-  .en{
-    font-size:10pt; color:var(--muted); margin-bottom:3mm;
-  }
-  .stage .row{ display:flex; gap:6mm; align-items:flex-start; margin-top:3mm; }
-  .label{
-    flex:0 0 22mm; font-size:9pt; font-weight:700; text-transform:uppercase; letter-spacing:0.4px;
-  }
-  .content{ flex:1 1 auto; }
-  ul{ margin:0; padding-left:5mm; }
-  li{ margin:1.2mm 0; }
-  .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:10pt; }
-  .hr{ border-top:1px solid var(--line); margin:5mm 0; }
-
-  /* Summary Table */
-  .summary{ margin-top:10mm; }
-  table{ width:100%; border-collapse:collapse; }
-  th, td{ border:1px solid var(--line); padding:3mm 3.5mm; vertical-align:top; }
-  th{ text-align:left; font-weight:800; }
-  .small{ font-size:9.8pt; color:var(--muted); }
-
-  /* Footer Note */
-  footer{ margin-top:10mm; font-size:9pt; color:var(--muted); border-top:1px solid var(--line); padding-top:4mm; }
-
-  /* ===== Language Switcher ===== */
-  .lang-switch{ display:flex; gap:6mm; margin:4mm 0 0; }
-  .lang-switch button{
-    border:1px solid var(--line); background:#fff; padding:2.8mm 4mm; cursor:pointer; font-weight:700;
-  }
-  .lang-switch button.active{ background:#000; color:#fff; }
-  .i18n{ display:none; }
-  html[data-lang="en"] .i18n.en{ display:block; }
-  html[data-lang="kr"] .i18n.kr{ display:block; }
-  html[data-lang="cn"] .i18n.cn{ display:block; }
-  @media print{ .lang-switch{ display:none !important; } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mok AR 粒子互娱系统</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        #loading {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #00FFFF; font-size: 24px; text-shadow: 0 0 10px #00FFFF; pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        canvas.output_canvas { display: none; } /* 隐藏 MediaPipe 原始画布 */
+        #ui {
+            position: absolute; bottom: 20px; left: 20px; color: rgba(0,255,255,0.7);
+            pointer-events: none; font-size: 14px;
+        }
+        .hud-item { margin-bottom: 5px; }
+    </style>
+    <script src="https://unpkg.com/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="page">
-  <nav class="lang-switch no-print" aria-label="Language Switch">
-    <button type="button" data-set-lang="en">EN</button>
-    <button type="button" data-set-lang="kr">한국어</button>
-    <button type="button" data-set-lang="cn">中文</button>
-  </nav>
-  <header>
-  <div class="i18n en">
-    <div class="kicker">Research Execution Roadmap</div>
-    <div class="title">AI Interface Design in Educational Apps and Its Impact on Brand Experience &amp; Brand Loyalty — An S–O–R-based Empirical Study on Duolingo</div>
-    <div class="subtitle">KCI submission / PhD manuscript template · S–O–R: <span class="mono">Stimulus → Organism → Response</span></div>
-    <div class="meta">
-      <div><strong>Version</strong>: v1.0 (B/W, A3 Portrait)</div>
-      <div><strong>Target App</strong>: Duolingo</div>
-      <div><strong>Method</strong>: PLS-SEM + Bootstrap (IPMA)</div>
-    </div>
-    <div class="sor" aria-label="S–O–R Path">
-      <div class="box">S｜AI Emotional Feedback</div>
-      <div class="arrow">→</div>
-      <div class="box">O｜Brand Experience</div>
-      <div class="arrow">→</div>
-      <div class="box">R｜Brand Loyalty</div>
-      <span class="small">Dashed direct path S→R included.</span>
-    </div>
-  </div>
 
-  <div class="i18n kr">
-    <div class="kicker">연구 실행 로드맵</div>
-    <div class="title">교육 앱의 AI 인터페이스 디자인이 브랜드 경험과 브랜드 충성도에 미치는 영향 — S–O–R 기반 Duolingo 실증연구</div>
-    <div class="subtitle">KCI 투고 / 박사 논문 템플릿 · S–O–R: <span class="mono">자극 → 유기체 → 반응</span></div>
-    <div class="meta">
-      <div><strong>버전</strong>: v1.0 (흑백, A3 세로)</div>
-      <div><strong>대상 앱</strong>: Duolingo</div>
-      <div><strong>방법</strong>: PLS-SEM + Bootstrap (IPMA)</div>
-    </div>
-    <div class="sor" aria-label="S–O–R 경로">
-      <div class="box">S｜AI 인터페이스 감성 피드백</div>
-      <div class="arrow">→</div>
-      <div class="box">O｜브랜드 경험</div>
-      <div class="arrow">→</div>
-      <div class="box">R｜브랜드 충성도</div>
-      <span class="small">점선 직경로 S→R 포함.</span>
-    </div>
-  </div>
-
-  <div class="i18n cn">
-    <div class="kicker">研究执行路线图</div>
-    <div class="title">教育类App中AI界面设计对品牌体验与品牌忠诚影响机制研究——基于S–O–R模型的Duolingo实证</div>
-    <div class="subtitle">KCI投稿 / 博士论文通用版 · S–O–R：<span class="mono">刺激 → 有机体 → 反应</span></div>
-    <div class="meta">
-      <div><strong>版本</strong>：v1.0（黑白，A3纵向）</div>
-      <div><strong>对象</strong>：Duolingo</div>
-      <div><strong>方法</strong>：PLS-SEM + Bootstrap（IPMA）</div>
-    </div>
-    <div class="sor" aria-label="S–O–R 路径">
-      <div class="box">S｜AI界面情感反馈</div>
-      <div class="arrow">→</div>
-      <div class="box">O｜品牌体验</div>
-      <div class="arrow">→</div>
-      <div class="box">R｜品牌忠诚</div>
-      <span class="small">含 S→R 虚线直接路径。</span>
-    </div>
-  </div>
-  </header>
-
-  <!-- ===== EN ===== -->
-  <section class="i18n en" id="stages-en" aria-label="Stages EN">
-    <article class="stage" id="stage1-en">
-      <h2>Stage 1｜Measurement Design (Instrument Development &amp; Theoretical Model)</h2>
-      <table class="stage-table" aria-label="Stage 1 Table (EN)">
-        <thead>
-          <tr>
-            <th style="width:18%">Submodule</th>
-            <th>Action</th>
-            <th style="width:24%">Deliverables</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>1.1 Theoretical Model &amp; Hypotheses</strong></td>
-            <td>
-              <ul>
-                <li>Build an S–O–R framework: AI Emotional Feedback (S) → Brand Experience (O) → Brand Loyalty (R).</li>
-                <li>Specify three core hypotheses: H1 (AI Emotional Feedback → Brand Experience, +); H2 (Brand Experience → Brand Loyalty, +); H3 (Brand Experience mediates between AI Emotional Feedback and Brand Loyalty).</li>
-                <li>Ground the model in Duolingo UI features (e.g., Duo owl facial feedback, encouraging messages).</li>
-              </ul>
-            </td>
-            <td>Model diagram; hypothesis table; theory-based reference list</td>
-          </tr>
-          <tr>
-            <td><strong>1.2 Scales &amp; Questionnaire</strong></td>
-            <td>
-              <ul>
-                <li>Adopt Brakus et&nbsp;al. (2009) for brand experience and Aaker (1997) for brand loyalty.</li>
-                <li>Develop a 4-item AI Emotional Feedback scale (7-point Likert).</li>
-                <li>Ensure ≥3–4 items per construct:
-                  <ul>
-                    <li>AI Emotional Feedback (B1–B4)</li>
-                    <li>Brand Experience (C1–C3)</li>
-                    <li>Brand Loyalty (D1–D4)</li>
-                  </ul>
-                </li>
-                <li>Total 17 items (incl. screeners &amp; QC); approx. 5 minutes.</li>
-                <li>Include informed consent and screening (Duolingo use ≥3 months, ≥2 times/week).</li>
-              </ul>
-            </td>
-            <td>Questionnaire v0.1 (Word + Google Form)</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <article class="stage" id="stage2-en">
-      <h2>Stage 2｜Data Collection (Pilot &amp; Formal Survey)</h2>
-      <table class="stage-table" aria-label="Stage 2 Table (EN)">
-        <thead>
-          <tr>
-            <th style="width:18%">Submodule</th>
-            <th>Action</th>
-            <th style="width:24%">Deliverables</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>2.1 Pilot Test &amp; Revision</strong></td>
-            <td>
-              <ul>
-                <li>Recruit ~30 Duolingo users.</li>
-                <li>Compute reliability (Cronbach’s α) and content validity.</li>
-                <li>Revise ambiguous or repetitive items based on feedback.</li>
-                <li>Produce the final questionnaire v1.0.</li>
-              </ul>
-            </td>
-            <td>Pilot report; reliability/validity table; revised questionnaire</td>
-          </tr>
-          <tr>
-            <td><strong>2.2 Sampling &amp; Sample Design</strong></td>
-            <td>
-              <ul>
-                <li>Eligibility: active Duolingo users (18–45, continuous use ≥3 months).</li>
-                <li>Expected N ≥200 (PLS-SEM 10-times rule).</li>
-                <li>Channels:
-                  <ul>
-                    <li>Duolingo Reddit, Facebook learning groups</li>
-                    <li>Korea/China online learning communities</li>
-                    <li>Paid survey platforms (e.g., Pollish, Wenjuanxing)</li>
-                  </ul>
-                </li>
-                <li>Ensure balanced structure; control invalid responses.</li>
-              </ul>
-            </td>
-            <td>Sampling &amp; recruitment plan; bilingual recruitment copy</td>
-          </tr>
-          <tr>
-            <td><strong>2.3 Formal Deployment &amp; Data Cleaning</strong></td>
-            <td>
-              <ul>
-                <li>Deploy online for ~3–4 weeks; monitor response speed and completion rate.</li>
-                <li>Clean data: remove incomplete cases, abnormal time, straight-lining.</li>
-                <li>Finalize valid sample N ≈ 150–250.</li>
-              </ul>
-            </td>
-            <td>Final dataset (CSV/SPSS); descriptive report (demographics &amp; sample quality)</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <article class="stage" id="stage3-en">
-      <h2>Stage 3｜Data Analysis (PLS-SEM &amp; IPMA)</h2>
-      <table class="stage-table" aria-label="Stage 3 Table (EN)">
-        <thead>
-          <tr>
-            <th style="width:18%">Submodule</th>
-            <th>Action</th>
-            <th style="width:24%">Deliverables</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>3.1 PLS-SEM Estimation &amp; Validation</strong></td>
-            <td>
-              <ul>
-                <li>Import data into SmartPLS 4; measurement model: loadings, α, CR, AVE ≥0.50, HTMT ≤0.90.</li>
-                <li>Structural model: path coefficients (β), bootstrapping (5,000), R².</li>
-              </ul>
-            </td>
-            <td>SmartPLS results; path diagram (β &amp; p-values)</td>
-          </tr>
-          <tr>
-            <td><strong>3.2 Mediation Analysis</strong></td>
-            <td>
-              <ul>
-                <li>Test the mediating role of Brand Experience; 95% bootstrap CI for indirect effects (significant if CI excludes 0).</li>
-                <li>Determine full/partial mediation; compute VAF.</li>
-              </ul>
-            </td>
-            <td>Mediation analysis table; write-up for the Results section</td>
-          </tr>
-          <tr>
-            <td><strong>3.3 IPMA (Importance–Performance Map)</strong></td>
-            <td>
-              <ul>
-                <li>Target construct: Brand Loyalty; compute importance (total effects) and performance (means).</li>
-                <li>Plot the four-quadrant map; identify high-importance/low-performance priorities; derive design recommendations.</li>
-              </ul>
-            </td>
-            <td>IPMA table; graphics; 1-page conclusions</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <section class="summary" id="summary-en" aria-label="Outputs Summary (EN)">
-      <h2 class="mono" style="font-size:13pt; margin:0 0 3mm;">Summary｜Key Outputs (No Timeline)</h2>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:18%">Stage</th>
-            <th>Main Tasks</th>
-            <th style="width:32%">Deliverables</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Stage 1</td>
-            <td>Theoretical model &amp; hypotheses; scales &amp; questionnaire design</td>
-            <td>Model diagram; hypothesis table; reference list; questionnaire v0.1</td>
-          </tr>
-          <tr>
-            <td>Stage 2</td>
-            <td>Pilot &amp; revision; sampling &amp; sample design; formal deployment &amp; cleaning</td>
-            <td>Pilot report; reliability/validity table; revised questionnaire; sampling plan &amp; copy; final dataset &amp; sample report</td>
-          </tr>
-          <tr>
-            <td>Stage 3</td>
-            <td>PLS-SEM estimation &amp; validation; mediation analysis; IPMA</td>
-            <td>SmartPLS results &amp; path diagram; mediation table &amp; write-up; IPMA table, graphics &amp; conclusions</td>
-          </tr>
-          <tr>
-            <td>Stage 4</td>
-            <td>Drafting; revision &amp; formatting; submission &amp; review</td>
-            <td>Manuscript draft; camera-ready version &amp; appendices; submission confirmation, response-to-reviewers &amp; final acceptance</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  </section>
-
-  <!-- ===== KR ===== -->
-  <section class="i18n kr" id="stages-kr" aria-label="Stages KR">
-    <article class="stage" id="stage1-kr">
-      <h2>1단계｜측정 설계(도구 개발 및 이론모형)</h2>
-      <table class="stage-table" aria-label="Stage 1 Table (KR)">
-        <thead>
-          <tr>
-            <th style="width:18%">하위 모듈</th>
-            <th>실행 과업</th>
-            <th style="width:24%">산출물</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>1.1 이론모형 및 가설 수립</strong></td>
-            <td>
-              <ul>
-                <li>S–O–R 프레임 구축: AI 감성 피드백(S) → 브랜드 경험(O) → 브랜드 충성도(R).</li>
-                <li>핵심 가설 3가지: H1(AI 감성 피드백 → 브랜드 경험, +), H2(브랜드 경험 → 브랜드 충성도, +), H3(브랜드 경험의 매개효과).</li>
-                <li>Duolingo UI 특성(예: Duo 부엉이 표정 피드백, 격려 문구 등)으로 이론 근거 제시.</li>
-              </ul>
-            </td>
-            <td>이론 모형 도식; 가설 표; 이론 근거 문헌 목록</td>
-          </tr>
-          <tr>
-            <td><strong>1.2 척도 및 설문 설계</strong></td>
-            <td>
-              <ul>
-                <li>Brakus 등(2009) 브랜드 경험 척도, Aaker(1997) 브랜드 충성도 차원 참조.</li>
-                <li>AI 인터페이스 감성 피드백 4문항(7점 리커트) 자가척도 개발.</li>
-                <li>각 구성개념 최소 3–4문항:
-                  <ul>
-                    <li>AI 감성 피드백(B1–B4)</li>
-                    <li>브랜드 경험(C1–C3)</li>
-                    <li>브랜드 충성도(D1–D4)</li>
-                  </ul>
-                </li>
-                <li>총 17문항(스크리너/품질통제 포함), 약 5분.</li>
-                <li>동의서 및 스크리닝 포함(사용기간 ≥3개월, 주 ≥2회).</li>
-              </ul>
-            </td>
-            <td>설문 v0.1(Word + Google Form)</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <article class="stage" id="stage2-kr">
-      <h2>2단계｜데이터 수집(파일럿 및 본조사)</h2>
-      <table class="stage-table" aria-label="Stage 2 Table (KR)">
-        <thead>
-          <tr>
-            <th style="width:18%">하위 모듈</th>
-            <th>실행 과업</th>
-            <th style="width:24%">산출물</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>2.1 파일럿 테스트 및 수정</strong></td>
-            <td>
-              <ul>
-                <li>Duolingo 사용자 약 30명 모집.</li>
-                <li>신뢰도(Cronbach’s α) · 내용타당도 산출.</li>
-                <li>피드백 반영해 모호/중복 문항 수정.</li>
-                <li>최종 설문 v1.0 산출.</li>
-              </ul>
-            </td>
-            <td>파일럿 보고서; 신·타당도 표; 수정 설문</td>
-          </tr>
-          <tr>
-            <td><strong>2.2 표집 및 표본 설계</strong></td>
-            <td>
-              <ul>
-                <li>자격: 활성 사용자(18–45세, 연속 ≥3개월).</li>
-                <li>예상 N ≥200(PLS-SEM 10배 규칙).</li>
-                <li>채널:
-                  <ul>
-                    <li>Duolingo Reddit, Facebook 학습 그룹</li>
-                    <li>한국/중국 온라인 학습 커뮤니티</li>
-                    <li>유료 설문 플랫폼(Pollfish, 问卷星 등)</li>
-                  </ul>
-                </li>
-                <li>표본 구조 균형, 무효 응답 통제.</li>
-              </ul>
-            </td>
-            <td>표집·모집 계획; 이중언어 모집 문안</td>
-          </tr>
-          <tr>
-            <td><strong>2.3 본조사 배포 및 데이터 정제</strong></td>
-            <td>
-              <ul>
-                <li>온라인 배포 약 3–4주; 응답 속도·완료율 모니터링.</li>
-                <li>정제: 미완료, 비정상 시간, 동질 응답 제거.</li>
-                <li>유효 표본 N ≈ 150–250 확정.</li>
-              </ul>
-            </td>
-            <td>최종 데이터셋(CSV/SPSS); 기술 보고서(인구통계·표본 품질)</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <article class="stage" id="stage3-kr">
-      <h2>3단계｜데이터 분석(PLS-SEM &amp; IPMA)</h2>
-      <table class="stage-table" aria-label="Stage 3 Table (KR)">
-        <thead>
-          <tr>
-            <th style="width:18%">하위 모듈</th>
-            <th>실행 과업</th>
-            <th style="width:24%">산출물</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>3.1 PLS-SEM 추정·검증</strong></td>
-            <td>
-              <ul>
-                <li>SmartPLS 4 입력; 측정모형: 적재량, α, CR, AVE ≥0.50, HTMT ≤0.90.</li>
-                <li>구조모형: 경로계수 β, 부트스트래핑(5,000), R².</li>
-              </ul>
-            </td>
-            <td>SmartPLS 결과; 경로도(β·p값)</td>
-          </tr>
-          <tr>
-            <td><strong>3.2 매개효과 검정</strong></td>
-            <td>
-              <ul>
-                <li>브랜드 경험의 매개역할; 간접효과 95% CI(0 미포함 시 유의).</li>
-                <li>완전/부분 매개 판정; VAF 산출.</li>
-              </ul>
-            </td>
-            <td>매개분석 표; 결과 서술</td>
-          </tr>
-          <tr>
-            <td><strong>3.3 IPMA(중요도–성과 지도)</strong></td>
-            <td>
-              <ul>
-                <li>목표: 브랜드 충성도; 중요도(총효과)·성과(평균) 계산.</li>
-                <li>4사분면 도식; 고중요/저성과 우선 개선안 도출.</li>
-              </ul>
-            </td>
-            <td>IPMA 표; 그래픽; 1페이지 결론</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <section class="summary" id="summary-kr" aria-label="Outputs Summary (KR)">
-      <h2 class="mono" style="font-size:13pt; margin:0 0 3mm;">요약｜핵심 산출물(타임라인 없음)</h2>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:18%">단계</th>
-            <th>주요 과업</th>
-            <th style="width:32%">산출물</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1단계</td>
-            <td>이론모형·가설; 척도·설문 설계</td>
-            <td>모형도; 가설표; 문헌 리스트; 설문 v0.1</td>
-          </tr>
-          <tr>
-            <td>2단계</td>
-            <td>파일럿·수정; 표집·표본 설계; 본조사·정제</td>
-            <td>파일럿 보고서; 신·타당도 표; 수정 설문; 표집 계획·문안; 최종 데이터셋·표본 보고서</td>
-          </tr>
-          <tr>
-            <td>3단계</td>
-            <td>PLS-SEM 추정·검증; 매개효과; IPMA</td>
-            <td>SmartPLS 결과·경로도; 매개 표·서술; IPMA 표·그래픽·결론</td>
-          </tr>
-          <tr>
-            <td>4단계</td>
-            <td>초고; 수정·서식; 투고·심사</td>
-            <td>논문 초고; 최종본·부록; 투고 확인·심사 답신·최종 게재본</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  </section>
-
-  <!-- ===== CN ===== -->
-  <section class="i18n cn" id="stages-cn" aria-label="Stages CN">
-    <article class="stage" id="stage1-cn">
-      <h2>阶段一｜测量设计（问卷开发与理论模型构建）</h2>
-      <table class="stage-table" aria-label="Stage 1 Table (CN)">
-        <thead>
-          <tr>
-            <th style="width:18%">子模块</th>
-            <th>行动任务</th>
-            <th style="width:24%">产出物</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>1.1 理论模型与假设制定</strong></td>
-            <td>
-              <ul>
-                <li>构建S–O–R研究框架：AI情感反馈（S）→ 品牌体验（O）→ 品牌忠诚（R）。</li>
-                <li>建立三条核心假设：H1（AI情感反馈 → 品牌体验，+）；H2（品牌体验 → 品牌忠诚，+）；H3（品牌体验的中介作用）。</li>
-                <li>结合Duolingo界面特征（如Duo猫头鹰表情反馈、鼓励语）进行理论论证。</li>
-              </ul>
-            </td>
-            <td>理论模型图；假设表格；理论依据文献列表</td>
-          </tr>
-          <tr>
-            <td><strong>1.2 量表与问卷设计</strong></td>
-            <td>
-              <ul>
-                <li>参照Brakus等（2009）品牌体验量表与Aaker（1997）品牌忠诚维度。</li>
-                <li>自编AI界面情感反馈量表（4题，7点李克特）。</li>
-                <li>每个变量≥3–4题：
-                  <ul>
-                    <li>AI情感反馈（B1–B4）</li>
-                    <li>品牌体验（C1–C3）</li>
-                    <li>品牌忠诚（D1–D4）</li>
-                  </ul>
-                </li>
-                <li>问卷共17题（含筛选与质控），约5分钟。</li>
-                <li>设置知情同意与筛选逻辑（使用≥3个月，周使用≥2次）。</li>
-              </ul>
-            </td>
-            <td>问卷v0.1（Word版 + Google表单）</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <article class="stage" id="stage2-cn">
-      <h2>阶段二｜数据收集（预测试与正式发放）</h2>
-      <table class="stage-table" aria-label="Stage 2 Table (CN)">
-        <thead>
-          <tr>
-            <th style="width:18%">子模块</th>
-            <th>行动任务</th>
-            <th style="width:24%">产出物</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>2.1 预测试与修订</strong></td>
-            <td>
-              <ul>
-                <li>招募约30位Duolingo用户。</li>
-                <li>计算信度（Cronbach’s α）与内容效度。</li>
-                <li>依据反馈修订语义歧义或重复问题。</li>
-                <li>形成最终问卷v1.0。</li>
-              </ul>
-            </td>
-            <td>预测试报告；信效度表；修订后问卷</td>
-          </tr>
-          <tr>
-            <td><strong>2.2 抽样与样本设计</strong></td>
-            <td>
-              <ul>
-                <li>样本标准：活跃用户（18–45岁，连续使用≥3个月）。</li>
-                <li>预期样本量≥200（PLS-SEM“最大路径×10”规则）。</li>
-                <li>渠道：
-                  <ul>
-                    <li>Duolingo Reddit、Facebook学习群组</li>
-                    <li>韩国/中国在线学习社群</li>
-                    <li>付费问卷平台（Pollfish、问卷星等）</li>
-                  </ul>
-                </li>
-                <li>保证结构均衡，控制无效作答。</li>
-              </ul>
-            </td>
-            <td>抽样与招募方案；双语招募文案</td>
-          </tr>
-          <tr>
-            <td><strong>2.3 正式发放与数据清洗</strong></td>
-            <td>
-              <ul>
-                <li>线上发放约3–4周；监测答题速度与完成率。</li>
-                <li>清洗：删除未完成、异常时长、同质作答。</li>
-                <li>确定最终有效样本N≈150–250。</li>
-              </ul>
-            </td>
-            <td>最终数据集（CSV/SPSS）；数据描述报告（人口统计+样本质量）</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <article class="stage" id="stage3-cn">
-      <h2>阶段三｜数据分析（PLS-SEM与IPMA）</h2>
-      <table class="stage-table" aria-label="Stage 3 Table (CN)">
-        <thead>
-          <tr>
-            <th style="width:18%">子模块</th>
-            <th>行动任务</th>
-            <th style="width:24%">产出物</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>3.1 模型估计与验证</strong></td>
-            <td>
-              <ul>
-                <li>SmartPLS 4导入数据；测量模型：载荷、α、CR、AVE≥0.50、HTMT≤0.90。</li>
-                <li>结构模型：路径系数β、Bootstrap（5000）、R²。</li>
-              </ul>
-            </td>
-            <td>SmartPLS结果；路径图（含β与p值）</td>
-          </tr>
-          <tr>
-            <td><strong>3.2 中介效应检验</strong></td>
-            <td>
-              <ul>
-                <li>检验品牌体验的中介作用；间接效应95%CI（不含0即显著）。</li>
-                <li>判断完全/部分中介；计算VAF。</li>
-              </ul>
-            </td>
-            <td>中介效应表；结果写作段落</td>
-          </tr>
-          <tr>
-            <td><strong>3.3 IPMA（重要性–绩效映射）</strong></td>
-            <td>
-              <ul>
-                <li>目标变量：品牌忠诚；计算重要性（总效应）与绩效（均值）。</li>
-                <li>绘制四象限图；识别“高重要/低绩效”优先项并形成设计建议。</li>
-              </ul>
-            </td>
-            <td>IPMA表；图形输出；一页结论</td>
-          </tr>
-        </tbody>
-      </table>
-    </article>
-
-    <section class="summary" id="summary-cn" aria-label="Outputs Summary (CN)">
-      <h2 class="mono" style="font-size:13pt; margin:0 0 3mm;">总结｜关键成果（无时间节点）</h2>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:18%">阶段</th>
-            <th>主要任务</th>
-            <th style="width:32%">产出物</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>阶段一</td>
-            <td>理论模型与假设；量表与问卷设计</td>
-            <td>模型图；假设表；文献列表；问卷v0.1</td>
-          </tr>
-          <tr>
-            <td>阶段二</td>
-            <td>预测试与修订；抽样与样本设计；正式发放与清洗</td>
-            <td>预测试报告；信效度表；修订问卷；抽样方案与文案；最终数据集与样本报告</td>
-          </tr>
-          <tr>
-            <td>阶段三</td>
-            <td>PLS-SEM估计与验证；中介效应；IPMA</td>
-            <td>SmartPLS结果与路径图；中介表与写作；IPMA表、图与结论</td>
-          </tr>
-          <tr>
-            <td>阶段四</td>
-            <td>初稿撰写；修改与排版；投稿与审稿</td>
-            <td>论文初稿；定稿与附录；投稿确认、评审回复与最终录用</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-  </section>
-
-  <footer>
-    <div class="i18n en">Print tips: Choose “A3 Portrait”, margins 15 mm, and turn off browser headers/footers. To place into Figma, export to PDF then import. Need a landscape / EN–KR / EN–CN version or a Gantt overlay? I can derive it from this master.</div>
-    <div class="i18n kr">인쇄 팁: 브라우저 인쇄에서 ‘A3 세로(Portrait)’, 여백 15mm, 머리말/바닥글 끄기. Figma에는 PDF로 내보낸 뒤 가져오세요. 가로형/영–한/영–중 버전 또는 간트 오버레이가 필요하면 본 마스터에서 파생 가능합니다.</div>
-    <div class="i18n cn">打印建议：浏览器打印选择“A3 纵向”、页边距 15 mm，关闭页眉页脚；置入 Figma 时先导出 PDF 再导入。若需横版 / EN–KR / EN–CN 版本或甘特图叠加，可在此版基础上派生。</div>
-  </footer>
+<div id="loading">正在初始化神经连接...</div>
+<div id="ui">
+    <div class="hud-item" id="gesture-state">手势: 等待检测...</div>
+    <div class="hud-item" id="physics-info">物理: 稳定</div>
 </div>
-<script>
-(function(){
-  const root = document.documentElement;
-  const btns = document.querySelectorAll('.lang-switch [data-set-lang]');
-  const titles = {
-    en: 'Research Execution Roadmap – S–O–R (Duolingo)',
-    kr: '연구 실행 로드맵 – S–O–R (Duolingo)',
-    cn: '研究执行路线图 – S–O–R（Duolingo）'
-  };
-  function setLang(lang){
-    root.setAttribute('data-lang', lang);
-    btns.forEach(b=>b.classList.toggle('active', b.dataset.setLang===lang));
-    document.title = titles[lang] || titles.en;
-    try{ localStorage.setItem('tri_lang_pref', lang); }catch(e){}
-  }
-  btns.forEach(b=>b.addEventListener('click', ()=> setLang(b.dataset.setLang)));
-  const initial = (function(){
-    try{ return localStorage.getItem('tri_lang_pref') || 'en'; }catch(e){ return 'en'; }
-  })();
-  setLang(initial);
-})();
+
+<script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.146.0/build/three.module.js';
+
+    // --- 配置参数 ---
+    const CONFIG = {
+        particleCount: 16000,
+        color: 0x00FFFF,
+        baseSize: 0.15,
+        springStrength: 0.05, // 弹簧劲度系数 (恢复力)
+        damping: 0.92,        // 阻尼系数 (模拟空气阻力)
+        interactionRadius: 4, // 手部斥力半径
+        explodeForce: 2.0     // 切换爆炸力度
+    };
+
+    // --- 全局变量 ---
+    let scene, camera, renderer, particles, geometry;
+    let targetPositions = []; // 存储目标形状的坐标数据
+    let currentShape = 'sphere'; // 当前形状
+    const particleData = [];  // 存储物理数据 {vx, vy, vz}
+    
+    // 手部交互数据
+    let handPos = new THREE.Vector3(0, 0, 0);
+    let handVel = new THREE.Vector3(0, 0, 0);
+    let isHandPresent = false;
+    let lastHandPos = new THREE.Vector3(0, 0, 0);
+    let lastTime = 0;
+    let handScaleFactor = 1.0;
+
+    // --- 初始化 Three.js ---
+    function initThree() {
+        scene = new THREE.Scene();
+        // 稍微加点迷雾增加景深
+        scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 25;
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.body.appendChild(renderer.domElement);
+
+        createParticles();
+        generateAllShapes(); // 预计算所有形状
+        
+        window.addEventListener('resize', onWindowResize);
+        animate();
+    }
+
+    // --- 粒子系统构建 ---
+    function createParticles() {
+        geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(CONFIG.particleCount * 3);
+        const colors = new Float32Array(CONFIG.particleCount * 3);
+
+        const colorObj = new THREE.Color(CONFIG.color);
+
+        for (let i = 0; i < CONFIG.particleCount; i++) {
+            // 初始随机位置
+            positions[i * 3] = (Math.random() - 0.5) * 50;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 50;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+
+            // 物理数据初始化
+            particleData.push({
+                vx: 0, vy: 0, vz: 0,
+                baseX: 0, baseY: 0, baseZ: 0 // 目标位置占位
+            });
+
+            // 颜色略微抖动，更有层次感
+            colors[i * 3] = colorObj.r;
+            colors[i * 3 + 1] = colorObj.g + (Math.random() - 0.5) * 0.2;
+            colors[i * 3 + 2] = colorObj.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        // 自定义材质
+        const material = new THREE.PointsMaterial({
+            size: CONFIG.baseSize,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+    }
+
+    // --- 形状生成器 (核心数学) ---
+    const Shapes = {
+        sphere: () => {
+            const data = [];
+            const radius = 8;
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                const phi = Math.acos(-1 + (2 * i) / CONFIG.particleCount);
+                const theta = Math.sqrt(CONFIG.particleCount * Math.PI) * phi;
+                data.push(
+                    radius * Math.cos(theta) * Math.sin(phi),
+                    radius * Math.sin(theta) * Math.sin(phi),
+                    radius * Math.cos(phi)
+                );
+            }
+            return data;
+        },
+        torus: () => {
+            const data = [];
+            const R = 7; // 主半径
+            const r = 2.5; // 管道半径
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                const u = Math.random() * Math.PI * 2;
+                const v = Math.random() * Math.PI * 2;
+                data.push(
+                    (R + r * Math.cos(v)) * Math.cos(u),
+                    (R + r * Math.cos(v)) * Math.sin(u),
+                    r * Math.sin(v)
+                );
+            }
+            return data;
+        },
+        star: () => {
+            const data = [];
+            const rBase = 8;
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                // 简单的星形分布采样 (球体坐标变种)
+                const u = Math.random() * 2 * Math.PI;
+                const v = Math.random() * 2 * Math.PI;
+                // 星形方程扰动
+                const len = rBase * (1 + 0.5 * (Math.sin(5 * u) * Math.sin(5 * v))); 
+                data.push(
+                    len * Math.sin(u) * Math.cos(v),
+                    len * Math.sin(u) * Math.sin(v),
+                    len * Math.cos(u)
+                );
+            }
+            return data;
+        },
+        heart: () => {
+            const data = [];
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                // 心形参数方程 3D
+                let t = Math.random() * Math.PI * 2;
+                let u = Math.random() * Math.PI;
+                
+                // 稍微复杂的 3D 心形
+                const x = 16 * Math.pow(Math.sin(t), 3) * Math.sin(u);
+                const y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * Math.sin(u);
+                const z = 6 * Math.cos(u);
+                
+                // 缩放适应场景
+                data.push(x * 0.5, y * 0.5, z * 0.5);
+            }
+            return data;
+        },
+        text: () => {
+            // 使用 Canvas 生成文字并采样
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const size = 512;
+            canvas.width = size;
+            canvas.height = size;
+            
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0,0, size, size);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 80px "Microsoft YaHei", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // 换行绘制
+            ctx.fillText("我是", size/2, size/2 - 50);
+            ctx.fillText("Mok", size/2, size/2 + 50);
+
+            const imageData = ctx.getImageData(0, 0, size, size);
+            const pixels = imageData.data;
+            const validPixels = [];
+
+            // 收集所有白色像素
+            for(let y=0; y<size; y+=2) {
+                for(let x=0; x<size; x+=2) {
+                    const index = (y * size + x) * 4;
+                    if(pixels[index] > 128) {
+                        validPixels.push({x: x, y: y});
+                    }
+                }
+            }
+
+            const data = [];
+            // 映射到粒子
+            for (let i = 0; i < CONFIG.particleCount; i++) {
+                const p = validPixels[Math.floor(Math.random() * validPixels.length)];
+                if(p) {
+                    // 坐标变换：Canvas 2D -> 3D 世界坐标
+                    data.push(
+                        (p.x - size/2) * 0.05, 
+                        -(p.y - size/2) * 0.05, // Y轴反转
+                        (Math.random() - 0.5) * 1 // 给文字一点 Z 轴厚度
+                    );
+                } else {
+                    data.push(0,0,0);
+                }
+            }
+            return data;
+        }
+    };
+
+    const targetStore = {};
+
+    function generateAllShapes() {
+        targetStore['sphere'] = Shapes.sphere();
+        targetStore['torus'] = Shapes.torus();
+        targetStore['star'] = Shapes.star();
+        targetStore['heart'] = Shapes.heart();
+        targetStore['text'] = Shapes.text();
+        
+        // 初始目标
+        updateTargets('sphere');
+    }
+
+    function updateTargets(shapeKey) {
+        if(currentShape === shapeKey) return;
+        currentShape = shapeKey;
+        
+        const targets = targetStore[shapeKey];
+        for(let i=0; i<CONFIG.particleCount; i++) {
+            // 更新物理目标的基准位置
+            particleData[i].baseX = targets[i*3];
+            particleData[i].baseY = targets[i*3 + 1];
+            particleData[i].baseZ = targets[i*3 + 2];
+
+            // 爆炸特效：给速度加一个巨大的随机向量
+            const explode = new THREE.Vector3(
+                Math.random()-0.5, Math.random()-0.5, Math.random()-0.5
+            ).normalize().multiplyScalar(CONFIG.explodeForce);
+            
+            particleData[i].vx += explode.x;
+            particleData[i].vy += explode.y;
+            particleData[i].vz += explode.z;
+        }
+        document.getElementById('gesture-state').innerText = `手势: ${shapeKey.toUpperCase()} (激活)`;
+    }
+
+    // --- 物理引擎循环 ---
+    function animate() {
+        requestAnimationFrame(animate);
+
+        const time = performance.now() * 0.001;
+        const positions = geometry.attributes.position.array;
+        
+        // 粒子缩放 (根据手掌深度)
+        // 通过 group scale 或者直接修改坐标。这里为了性能直接改 positions 或 使用 Group。
+        // 为了物理稳定性，我们修改 目标基准点 的计算逻辑可能会更好，但直接缩放 Group 最快。
+        particles.scale.setScalar(THREE.MathUtils.lerp(particles.scale.x, handScaleFactor, 0.1));
+
+        // 风暴计算：如果手速很快
+        const handSpeed = handVel.length();
+        const isStorm = handSpeed > 100 && isHandPresent; 
+        
+        if(isStorm) {
+            document.getElementById('physics-info').innerText = "物理: 风暴模式!!!";
+        } else {
+            document.getElementById('physics-info').innerText = "物理: 稳定流体";
+        }
+
+        for (let i = 0; i < CONFIG.particleCount; i++) {
+            const px = positions[i * 3];
+            const py = positions[i * 3 + 1];
+            const pz = positions[i * 3 + 2];
+
+            const tx = particleData[i].baseX;
+            const ty = particleData[i].baseY;
+            const tz = particleData[i].baseZ;
+
+            // 1. 弹簧力 (Hooke's Law)
+            let fx = (tx - px) * CONFIG.springStrength;
+            let fy = (ty - py) * CONFIG.springStrength;
+            let fz = (tz - pz) * CONFIG.springStrength;
+
+            // 2. 交互力 (手部斥力/风暴)
+            if (isHandPresent) {
+                const dx = px - handPos.x;
+                const dy = py - handPos.y;
+                const dz = pz - handPos.z;
+                const distSq = dx*dx + dy*dy + dz*dz;
+
+                // 基础斥力
+                if (distSq < CONFIG.interactionRadius * CONFIG.interactionRadius) {
+                    const dist = Math.sqrt(distSq);
+                    const force = (CONFIG.interactionRadius - dist) / CONFIG.interactionRadius;
+                    fx += dx * force * 1.5; // 推开
+                    fy += dy * force * 1.5;
+                    fz += dz * force * 1.5;
+                }
+
+                // 风暴模式：根据手部速度向量施加力
+                if (isStorm && distSq < 150) { // 范围更大
+                    fx += handVel.x * 0.02;
+                    fy += handVel.y * 0.02;
+                    fz += handVel.z * 0.02;
+                }
+            }
+
+            // 3. 更新速度 (F = ma, 假设 m=1)
+            particleData[i].vx += fx;
+            particleData[i].vy += fy;
+            particleData[i].vz += fz;
+
+            // 4. 阻尼 (摩擦力)
+            particleData[i].vx *= CONFIG.damping;
+            particleData[i].vy *= CONFIG.damping;
+            particleData[i].vz *= CONFIG.damping;
+
+            // 5. 更新位置
+            positions[i * 3] += particleData[i].vx;
+            positions[i * 3 + 1] += particleData[i].vy;
+            positions[i * 3 + 2] += particleData[i].vz;
+        }
+
+        geometry.attributes.position.needsUpdate = true;
+        
+        // 缓慢旋转整体
+        particles.rotation.y += 0.002;
+
+        renderer.render(scene, camera);
+    }
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // --- MediaPipe 手势逻辑 ---
+    // 启动 Three.js
+    initThree();
+
+    // 映射 MediaPipe 坐标 (0-1) 到 Three.js 世界坐标 (-x ~ x)
+    function mapHandToWorld(landmark) {
+        // 简单映射，根据相机Z轴距离调整系数
+        return new THREE.Vector3(
+            (landmark.x - 0.5) * -30, // X轴反转镜像
+            (landmark.y - 0.5) * -20, // Y轴反转
+            landmark.z * -10 // 深度
+        );
+    }
+
+    function calculateDistance(p1, p2) {
+        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+    }
+
+    // 手势识别器
+    function detectGestureFromLandmarks(landmarks) {
+        // 关键点索引: 
+        // 0: 手腕, 4: 拇指尖, 8: 食指尖, 12: 中指尖, 16: 无名指尖, 20: 小指尖
+        // 关节点(PIP): 6, 10, 14, 18
+        
+        const thumbTip = landmarks[4];
+        const indexTip = landmarks[8];
+        const indexPip = landmarks[6];
+        const middleTip = landmarks[12];
+        const middlePip = landmarks[10];
+        const ringTip = landmarks[16];
+        const ringPip = landmarks[14];
+        const pinkyTip = landmarks[20];
+        const pinkyPip = landmarks[18];
+
+        // 简单的手指伸展检测 (y轴对比，或者距离手腕的距离)
+        // 这里简化：如果指尖比关节更靠上(y更小)，视为伸展。
+        // 但为了更鲁棒，比较指尖到手腕 vs 关节到手腕的距离更准。
+        const wrist = landmarks[0];
+        
+        const isExtended = (tip, pip) => {
+            return calculateDistance(tip, wrist) > calculateDistance(pip, wrist) * 1.1; 
+        };
+
+        const idxOpen = isExtended(indexTip, indexPip);
+        const midOpen = isExtended(middleTip, middlePip);
+        const ringOpen = isExtended(ringTip, ringPip);
+        const pinOpen = isExtended(pinkyTip, pinkyPip);
+        // 拇指判断比较特殊，判断x距离
+        const thumbOpen = calculateDistance(thumbTip, landmarks[2]) > calculateDistance(landmarks[3], landmarks[2]) * 1.1; 
+
+        // 逻辑树
+        const openCount = [idxOpen, midOpen, ringOpen, pinOpen].filter(Boolean).length;
+
+        // 1. 握拳 (Closed Fist) -> 圆环 (Torus)
+        if (openCount === 0 && !thumbOpen) return 'torus';
+
+        // 2. 张手 (Open Hand) -> 球 (Sphere)
+        if (openCount === 4 && thumbOpen) return 'sphere';
+
+        // 3. 剪刀手 (Victory) -> 文字 (Text)
+        if (idxOpen && midOpen && !ringOpen && !pinOpen) return 'text';
+
+        // 4. 食指 (Index) -> 星 (Star)
+        if (idxOpen && !midOpen && !ringOpen && !pinOpen) return 'star';
+
+        // 5. 竖大拇指 (Thumb Up) -> 爱心 (Heart)
+        // 允许其他手指稍微弯曲
+        if (thumbOpen && !idxOpen && !midOpen && !ringOpen && !pinOpen) return 'heart';
+
+        return null; // 保持上一状态
+    }
+
+    // --- MediaPipe 初始化 ---
+    const videoElement = document.createElement('video'); // 不添加到 DOM，只用于流处理
+    
+    function onResults(results) {
+        document.getElementById('loading').style.opacity = 0;
+
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            isHandPresent = true;
+            const landmarks = results.multiHandLandmarks[0];
+            
+            // 1. 转换手部中心点用于物理交互 (使用手腕和中指根部的中间点)
+            const palmCenterRaw = {
+                x: (landmarks[0].x + landmarks[9].x) / 2,
+                y: (landmarks[0].y + landmarks[9].y) / 2,
+                z: landmarks[9].z
+            };
+            
+            const worldPos = mapHandToWorld(palmCenterRaw);
+            handPos.copy(worldPos);
+
+            // 2. 计算速度 (用于风暴效果)
+            const currentTime = performance.now();
+            const deltaTime = currentTime - lastTime;
+            if (deltaTime > 0) {
+                // v = (current - last) / dt
+                handVel.copy(handPos).sub(lastHandPos).multiplyScalar(1000 / deltaTime);
+            }
+            lastHandPos.copy(handPos);
+            lastTime = currentTime;
+
+            // 3. 计算手掌面积占比用于深度推拉 (Z-scale)
+            // 计算手腕到中指尖的距离作为参考
+            const handSize = calculateDistance(landmarks[0], landmarks[12]);
+            // 映射 size (0.1 ~ 0.4) -> scale (0.5 ~ 2.0)
+            const targetScale = THREE.MathUtils.mapLinear(handSize, 0.1, 0.4, 0.5, 2.5);
+            handScaleFactor = targetScale;
+
+            // 4. 手势识别与切换
+            const gesture = detectGestureFromLandmarks(landmarks);
+            if (gesture) {
+                updateTargets(gesture);
+            }
+
+        } else {
+            isHandPresent = false;
+            handScaleFactor = 1.0; // 复位
+            // 无手时，慢慢让速度归零
+            handVel.multiplyScalar(0.9);
+        }
+    }
+
+    const hands = new Hands({locateFile: (file) => {
+        return `https://unpkg.com/@mediapipe/hands/${file}`;
+    }});
+
+    hands.setOptions({
+        maxNumHands: 1,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+    });
+
+    hands.onResults(onResults);
+
+    const cameraUtils = new Camera(videoElement, {
+        onFrame: async () => {
+            await hands.send({image: videoElement});
+        },
+        width: 640,
+        height: 480
+    });
+    
+    // 启动摄像头
+    cameraUtils.start();
+
 </script>
 </body>
 </html>
